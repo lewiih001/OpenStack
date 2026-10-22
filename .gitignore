@@ -1,0 +1,29 @@
+# --- OS and editor files ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Secrets: never commit these in plain text (encrypted *.sops.* files ARE committed) ---
+*.pem
+*.key
+*.p12
+*.agekey
+age-keys.txt
+.env
+.env.*
+**/passwords.yml
+*kubeconfig*
+clouds.yaml
+secure.yaml
+
+# --- OpenTofu / Terraform ---
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfplan
+
+# --- Ansible / Python ---
+*.retry
+.venv/
+__pycache__/
