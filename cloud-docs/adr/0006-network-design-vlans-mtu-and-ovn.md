@@ -61,7 +61,7 @@ layout; individual allocations live in NetBox.
 ### Positive
 
 - Storage, overlay and API traffic are isolated and can be monitored separately.
-- OVN removes the centralised L3 agent; north-south traffic for floating IPs leaves from each hypervisor.
+- OVN removes the Neutron L3, DHCP and metadata agents. Traffic for floating IPs leaves directly from the hypervisor hosting the VM. Source-NAT traffic for VMs without a floating IP leaves through gateway chassis on the control nodes, scheduled with HA across all three.
 - One layout serves lab and production.
 
 ### Negative
