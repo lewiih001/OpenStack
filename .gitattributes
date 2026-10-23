@@ -1,4 +1,12 @@
 * text=auto eol=lf
-*.png binary
-*.jpg binary
-*.pdf binary
+*.png   binary
+*.jpg   binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.gz    binary
+*.tgz   binary
+*.iso   binary
+*.img   binary
+*.qcow2 binary
