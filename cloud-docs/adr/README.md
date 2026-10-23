@@ -25,3 +25,4 @@ old one's status line only.
 | [0006](0006-network-design-vlans-mtu-and-ovn.md) | Network design: VLAN layout, MTU and OVN | Accepted | 2026-10-23 |
 | [0007](0007-ceph-as-unified-storage-backend.md) | Ceph as the unified block, object and file storage backend | Accepted | 2026-10-23 |
 | [0008](0008-opentofu-for-infrastructure-as-code.md) | OpenTofu for infrastructure as code | Accepted | 2026-10-23 |
+| [0009](0009-argo-cd-for-gitops.md) | Argo CD for GitOps delivery to Kubernetes | Accepted | 2026-10-23 |
