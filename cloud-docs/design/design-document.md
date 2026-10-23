@@ -178,3 +178,43 @@ API from OpenTofu, and are configured only by Argo CD.
 | Magnum Heat driver | Deprecated | Cluster API (Magnum CAPI driver for self-service) |
 | Kubernetes Dashboard | Retired | Headlamp |
 | Redis | Licence change in 2024 | Valkey |
+
+## 5. Tenant architecture
+
+### 5.1 Identity and organisation
+
+- One Keystone domain per organisation (`platform`, `tek-inventory`, `tek-triangle`, one per customer). Projects per product and environment, for example `tek-inventory-prod` (**ADR-0015**).
+- People sign in through Keycloak with MFA. Keycloak groups map to the `reader`, `member` and `manager` roles. Automation uses application credentials (**ADR-0010**).
+- A new tenant is one reviewed `tenant` module block in `infra-live/prod/`. It creates the project, group mapping, quotas, network, router, security group, DNS zone and application credential in one apply.
+
+### 5.2 Compute offerings
+
+Flavor sizes double within each family so instances pack hosts with
+little waste. Root disks live in the Ceph `vms` pool and are never 0 GB.
+
+| Family | RAM per vCPU | Sizes (vCPU / RAM GB / root GB) | Use |
+| --- | --- | --- | --- |
+| `t1` | 2 GB | small 1/2/20, medium 2/4/40, large 4/8/40 | Development, CI runners, light services |
+| `m1` | 4 GB | small 1/4/20, medium 2/8/40, large 4/16/80, xlarge 8/32/80 | General purpose, Kubernetes nodes |
+| `r1` | 8 GB | large 2/16/40, xlarge 4/32/80, 2xlarge 8/64/80 | Databases, caches |
+| `c1` | 2 GB, pinned CPUs | large 4/8/40, xlarge 8/16/40 | Latency-sensitive work; only once a pinned host aggregate exists |
+
+- Allocation ratios are set per host: CPU 4:1 on shared cores, RAM 1:1. Pinned `c1` CPUs are never overcommitted.
+- Images: Ubuntu 24.04, Rocky 10 and Debian 13, stored as raw for Ceph copy-on-write cloning, with the guest agent enabled so snapshots are filesystem-consistent.
+
+### 5.3 Storage offerings
+
+| Volume type | Behaviour |
+| --- | --- |
+| `ssd` (default) | Ceph RBD, replication 3 |
+| `ssd-encrypted` | LUKS encryption, keys in Barbican |
+| `ssd-limited` | Front-end QoS caps (for example 3,000 IOPS and 200 MB/s) for noisy workloads |
+
+S3 buckets through RGW with Keystone-issued EC2 credentials, and CephFS
+shares through Manila from Phase 6.
+
+### 5.4 Placement, DNS and quotas
+
+- Region `nbo1`, availability zone `nbo1-a`. A single AZ provides no AZ-level redundancy yet; tenants use server groups with anti-affinity for HA (**ADR-0014**).
+- DNS: each tenant gets `<tenant>.cloud.<domain>` in Designate. APIs are at `api.cloud.<domain>` and Kubernetes workloads under `*.apps.cloud.<domain>` (**ADR-0012**; public domain to be chosen).
+- Every project has explicit quotas (instances, cores, RAM, volumes, GB, floating IPs, load balancers, S3 bytes). No project relies on defaults.
