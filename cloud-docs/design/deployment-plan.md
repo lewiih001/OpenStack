@@ -29,3 +29,49 @@ Requirements for every server:
 
 **Interim:** the GPU workstation (24 GB, 1 TB) acts as management host and
 all-in-one lab until this hardware exists (ADR-0002).
+
+## 2. Addressing plan
+
+### 2.1 Subnets
+
+| VLAN | Name | Production subnet | Lab subnet | Gateway | MTU |
+| --- | --- | --- | --- | --- | --- |
+| 10 | oob | 10.10.0.0/24 | 172.16.10.0/24 | `.1` on the OOB router | 1500 |
+| 20 | provision | 10.20.0.0/24 | 172.16.20.0/24 | none (MAAS on the management host) | 1500 |
+| 30 | mgmt | 10.30.0.0/24 | 172.16.30.0/24 | `.1` on the firewall, egress to mirrors and updates only | 9000 |
+| 40 | tunnel | 10.40.0.0/24 | 172.16.40.0/24 | none (not routed) | 9000 |
+| 50 | storage | 10.50.0.0/24 | 172.16.50.0/24 | none (not routed) | 9000 |
+| 60 | replication | 10.60.0.0/24 | 172.16.60.0/24 | none (not routed) | 9000 |
+| 70 | external | public block from the ISP | lab public or NAT range | ISP or firewall | 1500 |
+| 80 | lb-mgmt | 10.80.0.0/22 | 172.16.80.0/22 | none (Octavia only) | 1500 |
+
+The lab reuses VLAN IDs on its own switches with `172.16.<vlan>.0/24`
+subnets, so a lab address can never be mistaken for production.
+
+### 2.2 Host numbering inside each /24
+
+The same last octet identifies a host on every VLAN, so `.21` is always
+`ctl01`, whatever the network.
+
+| Range | Use |
+| --- | --- |
+| `.1` | Gateway, where the VLAN is routed |
+| `.2` to `.9` | Network devices (switches, firewalls, OOB router) |
+| `.10` to `.19` | Management hosts (`mgmt01` = `.11`) |
+| `.20` to `.49` | Control nodes (`ctl01` = `.21`, `ctl02` = `.22`, `ctl03` = `.23`) |
+| `.50` to `.99` | Hyperconverged and compute nodes (`hci01` = `.51` ...) |
+| `.100` to `.109` | Virtual IPs (internal API VIP = `10.30.0.100`) |
+| `.110` to `.199` | Reserved for growth (dedicated storage nodes from `.150`) |
+| `.200` to `.254` | DHCP pools where needed (MAAS commissioning on VLAN 20 only) |
+
+### 2.3 Which host gets an address on which VLAN
+
+| Host | 10 oob (BMC) | 20 provision | 30 mgmt | 40 tunnel | 50 storage | 60 replication | 70 external | 80 lb-mgmt |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `mgmt01` | yes | yes (MAAS) | yes | no | yes (Ceph admin) | no | no | no |
+| `ctl01` to `03` | yes | yes | yes | yes (OVN gateway) | yes (MON, MGR, clients) | no | interface, no IP | yes (Octavia health manager) |
+| `hci01` to `03` | yes | yes | yes | yes | yes | yes (OSD replication) | interface, no IP | no |
+
+VLAN 70 interfaces carry no host IP. Neutron and OVN own them for router
+gateways and distributed floating IPs. The external API VIP and the
+public addresses are allocated from the ISP block when it arrives.
