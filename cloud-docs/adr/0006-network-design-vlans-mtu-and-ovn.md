@@ -3,7 +3,7 @@
 - **Status:** Accepted, with the public address block still to be allocated
 - **Date:** 2026-10-23
 - **Deciders:** Lewis (lewiih001)
-- **Phase:** 0 (Bootstrap), built in Phase 1
+- **Phase:** 0 (Foundations), built in Phase 1
 
 ## Context
 
