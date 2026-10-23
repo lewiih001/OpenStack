@@ -1,9 +1,13 @@
 # Architecture decision records
 
 An ADR records one significant decision: the context, the options, the
-choice and its consequences. ADRs are immutable once accepted. To change
-a decision, write a new ADR that supersedes the old one and update the
-old one's status line only.
+choice and its consequences. The decision in an accepted ADR is never
+edited. To change a decision, write a new ADR that supersedes the old one
+and update the old one's status line only.
+
+Editorial corrections that do not change the decision (factual fixes,
+clarifications, typos) are allowed through a normal pull request whose
+commit message states what was corrected and why.
 
 ## Process
 
