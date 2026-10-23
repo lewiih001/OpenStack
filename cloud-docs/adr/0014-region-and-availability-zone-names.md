@@ -22,7 +22,7 @@ say nothing about location and do not scale to a second site.
 ## Decision
 
 - **Region:** `nbo1` (`openstack_region_name: "nbo1"` in Kolla). A future second site becomes a separate region, for example `nbo2` or `<city code>1`, sharing Keystone.
-- **Availability zones:** `nbo1-a` for Nova and Cinder from day one (`default_availability_zone` and `storage_availability_zone`). A second rack with independent power and switching becomes `nbo1-b`.
+- **Availability zones:** `nbo1-a` for Nova and Cinder from day one, set as `default_availability_zone` in the Nova configuration override and `storage_availability_zone` in the Cinder override under `infra-openstack/config/`. A second rack with independent power and switching becomes `nbo1-b`.
 - Nova host aggregates carry the AZ. Kubernetes nodes get the standard `topology.kubernetes.io/region` and `topology.kubernetes.io/zone` labels with the same values.
 - The lab uses region `lab1` and AZ `lab1-a`, so lab credentials can never target production by mistake.
 
