@@ -23,8 +23,8 @@ deploy the OS image.
 ## Options considered
 
 1. **Ubuntu 24.04 LTS**: Kolla-supported host and base, native MAAS images, standard security support to 2029 and longer with Ubuntu Pro.
-2. **Rocky Linux 9**: Kolla-supported and stable, but MAAS support is weaker and it would mix ecosystems with the Ubuntu-based tooling.
-3. **Debian 12**: supported by Kolla, but a smaller ecosystem for MAAS and Ceph packaging.
+2. **Rocky Linux**: supported by Kolla as host and container base, but MAAS support for it is weaker, and it would mix ecosystems with the Ubuntu-based tooling.
+3. **Debian**: supported by Kolla, but a smaller ecosystem for MAAS images and Ceph packaging.
 
 ## Decision
 
