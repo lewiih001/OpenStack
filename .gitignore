@@ -27,3 +27,6 @@ crash.log
 *.retry
 .venv/
 __pycache__/
+
+# --- Templates are safe to commit (placeholders only, never real values) ---
+!.env.example
