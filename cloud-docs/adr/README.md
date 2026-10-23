@@ -31,3 +31,4 @@ old one's status line only.
 | [0012](0012-naming-conventions.md) | Naming conventions | Accepted | 2026-10-23 |
 | [0013](0013-upgrade-cadence.md) | Upgrade cadence | Accepted | 2026-10-23 |
 | [0014](0014-region-and-availability-zone-names.md) | Region and availability zone names | Accepted | 2026-10-23 |
+| [0015](0015-keystone-domain-and-project-layout.md) | Keystone domain and project layout | Accepted | 2026-10-23 |
