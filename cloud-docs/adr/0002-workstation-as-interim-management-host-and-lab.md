@@ -3,7 +3,7 @@
 - **Status:** Proposed. To be accepted once the workstation's CPU, operating system and network interfaces are confirmed.
 - **Date:** 2026-10-23
 - **Deciders:** Lewis (lewiih001)
-- **Phase:** 0 (Bootstrap) to 1 (Lab)
+- **Phase:** 0 (Foundations) to 1 (Bare metal and Ceph)
 
 ## Context
 

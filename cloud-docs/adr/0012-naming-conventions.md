@@ -3,7 +3,7 @@
 - **Status:** Accepted, with the public DNS domain still to be chosen
 - **Date:** 2026-10-23
 - **Deciders:** Lewis (lewiih001)
-- **Phase:** 0 (Bootstrap), applies to all phases
+- **Phase:** 0 (Foundations), applies to all phases
 
 ## Context
 

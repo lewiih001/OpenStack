@@ -3,7 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-10-23
 - **Deciders:** Lewis (lewiih001)
-- **Phase:** 0 (Bootstrap), used from Phase 3
+- **Phase:** 0 (Foundations), used from Phase 3
 
 ## Context
 
