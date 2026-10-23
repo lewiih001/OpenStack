@@ -1,0 +1,24 @@
+---
+# yamllint configuration for the whole repository.
+# Starts from yamllint's "default" rule set and adjusts it so the same file
+# also satisfies ansible-lint (which reads this file) in later phases.
+extends: default
+
+rules:
+  line-length:
+    max: 160
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: false
+  braces:
+    max-spaces-inside: 1
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
+
+ignore: |
+  *.sops.yml
+  *.sops.yaml
