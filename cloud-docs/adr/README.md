@@ -17,3 +17,4 @@ old one's status line only.
 
 | ADR | Title | Status | Date |
 | --- | --- | --- | --- |
+| [0001](0001-use-github-for-source-control-and-ci.md) | Use GitHub for source control, reviews and CI | Accepted | 2026-10-23 |
