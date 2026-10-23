@@ -36,3 +36,4 @@ Rules:
 
 | Area | File | Stories |
 | --- | --- | --- |
+| Identity and access | [identity-and-access.md](identity-and-access.md) | US-001 to US-003 |
