@@ -22,3 +22,4 @@ Each folder maps to one repository in the work plan and can be split out later w
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:`...).
 - Secrets are committed only when SOPS-encrypted (`*.sops.yml`); plain-text secrets are blocked by `.gitignore` and CI.
 - Every change is rehearsed in the lab before production.
+- After cloning, run `git config core.hooksPath .githooks` to enable the local guard that blocks direct pushes to `main`.

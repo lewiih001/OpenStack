@@ -1,0 +1,16 @@
+#!/bin/sh
+# pre-push: block direct pushes to main.
+# Changes reach main only through pull requests that pass CI.
+# Git feeds one line per ref being pushed on stdin:
+#   <local ref> <local sha> <remote ref> <remote sha>
+protected="refs/heads/main"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "$protected" ]; then
+    echo "pre-push: direct pushes to main are blocked." >&2
+    echo "Push a branch and open a pull request instead." >&2
+    exit 1
+  fi
+done
+
+exit 0
