@@ -22,3 +22,4 @@ old one's status line only.
 | [0003](0003-monorepo-with-one-folder-per-planned-repository.md) | Start as a monorepo with one folder per planned repository | Accepted | 2026-10-23 |
 | [0004](0004-release-baseline-and-version-pinning.md) | Release baseline and version pinning | Accepted | 2026-10-23 |
 | [0005](0005-ubuntu-24-04-lts-as-host-and-kolla-base-os.md) | Ubuntu 24.04 LTS as host OS and Kolla base distribution | Accepted | 2026-10-23 |
+| [0006](0006-network-design-vlans-mtu-and-ovn.md) | Network design: VLAN layout, MTU and OVN | Accepted | 2026-10-23 |
