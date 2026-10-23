@@ -40,7 +40,9 @@ We will back up each layer with its native tool:
 | PostgreSQL (CloudNativePG) | Base backup and continuous WAL to RGW (Barman Cloud plugin) | Daily + continuous | 30 days | 30 min, point-in-time |
 | Kubernetes objects and PVCs | Velero with CSI snapshots to RGW | Daily | 14 days | 1 h per namespace |
 | Cluster API management state | `clusterctl move --to-directory` to RGW | Daily | 30 days | 2 h |
-| Harbor, Keycloak, NetBox | Their own backup tools to RGW | Daily | 30 days | 2 h |
+| Keycloak | Database through CloudNativePG (row above), plus a daily realm export to RGW | Daily + continuous | 30 days | 2 h |
+| Harbor | Database through CloudNativePG; registry storage already in RGW, versioned | Daily + continuous | 30 days | 2 h |
+| NetBox | `pg_dump` of its database plus media files to RGW | Daily | 30 days | 2 h |
 | Offsite copy of all backup buckets | Replication to a second site or external S3 provider | Daily | 90 days | 24 h |
 
 Rules:
