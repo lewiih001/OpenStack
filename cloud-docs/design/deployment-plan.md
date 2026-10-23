@@ -75,3 +75,49 @@ The same last octet identifies a host on every VLAN, so `.21` is always
 VLAN 70 interfaces carry no host IP. Neutron and OVN own them for router
 gateways and distributed floating IPs. The external API VIP and the
 public addresses are allocated from the ISP block when it arrives.
+
+## 3. Deployment-specific settings
+
+The values that differ per environment. Everything else follows Kolla,
+Ceph and OpenTofu defaults or the ADRs.
+
+| Setting | Production | Lab | Where it lives |
+| --- | --- | --- | --- |
+| `openstack_region_name` | `nbo1` | `lab1` | `infra-openstack/globals.yml` (ADR-0014) |
+| Default AZ (Nova, Cinder) | `nbo1-a` | `lab1-a` | `infra-openstack/` |
+| `kolla_base_distro` | `ubuntu` | `ubuntu` | `globals.yml` (ADR-0005) |
+| `openstack_release` | `2026.1` | `2026.1` | `globals.yml` (ADR-0004) |
+| `network_interface` | `bond0.30` | lab equivalent | `globals.yml` |
+| `tunnel_interface` | `bond0.40` | lab equivalent | `globals.yml` |
+| `storage_interface` | `bond0.50` | lab equivalent | `globals.yml` |
+| `neutron_external_interface` | `bond0.70` (no IP) | lab equivalent | `globals.yml` |
+| `kolla_internal_vip_address` | `10.30.0.100` | `172.16.30.100` | `globals.yml` |
+| `keepalived_virtual_router_id` | `51` | `52` (must differ) | `globals.yml` |
+| `kolla_external_fqdn` | `api.cloud.<domain>` | `api.lab.cloud.<domain>` | `globals.yml` (ADR-0012) |
+| `docker_registry` | `10.30.0.11:5000` (mirror on `mgmt01`) | lab management host | `globals.yml` |
+| TLS internal and external | enabled | enabled | `globals.yml` |
+| Nova `cpu_allocation_ratio` / `ram_allocation_ratio` | `4.0` / `1.0` | same | `infra-openstack/config/nova.conf` |
+| Nova `reserved_host_memory_mb` on HCI | `65536` | sized to lab hosts | per-host `nova.conf` |
+| Ceph `osd_memory_target` on HCI | 8 GB | sized to lab hosts | `infra-baremetal/` cephadm config |
+| Ceph replication size | 3, failure domain host | 3 (three lab nodes) | cephadm pool settings (ADR-0007) |
+| Octavia topology | `ACTIVE_STANDBY` | `ACTIVE_STANDBY` | `infra-openstack/config/octavia.conf` |
+
+Secrets (`passwords.yml`, keyrings, application credentials) are never
+listed here. They are generated once and stored SOPS-encrypted (Phase 0.4).
+
+## 4. Prerequisites before Phase 1
+
+| # | Prerequisite | Owner | Status |
+| --- | --- | --- | --- |
+| 1 | Hardware ordered and delivered (HCI RAM decision: 512 or 768 GB) | Lewis | Open |
+| 2 | Rack space (about 14U), A/B power on separate UPS (about 6 kW), cooling | Lewis / facility | Open |
+| 3 | Two upstream internet links, public block allocated (/24 requested, /26 minimum) | Lewis / ISPs | Open |
+| 4 | Public domain registered; `cloud.<domain>` delegation planned | Lewis | Open |
+| 5 | Firmware updated to identical versions per role (BIOS, BMC, NIC, NVMe) | Lewis | Open |
+| 6 | BIOS: VT-x/AMD-V and IOMMU on, performance profile, UEFI + Secure Boot | Lewis | Open |
+| 7 | Switches: MLAG, one LACP port-channel per server, VLANs trunked, MTU 9216 | Lewis | Open |
+| 8 | Out-of-band path (separate router or LTE modem) to VLAN 10 | Lewis | Open |
+| 9 | NTP: two internal chrony servers reachable from VLAN 30 | Lewis | Open |
+| 10 | NetBox populated with racks, cables, VLANs and every address in section 2 | Lewis | Open (Phase 0.7) |
+| 11 | SOPS + age keys created and backed up in two places | Lewis | Open (Phase 0.4) |
+| 12 | Offline root CA and intermediate CA created | Lewis | Open (Phase 0.5) |
