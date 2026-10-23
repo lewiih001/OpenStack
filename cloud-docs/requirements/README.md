@@ -42,3 +42,4 @@ Rules:
 | Storage | [storage.md](storage.md) | US-011 to US-014 |
 | Kubernetes and delivery | [kubernetes-and-delivery.md](kubernetes-and-delivery.md) | US-015 to US-017 |
 | Data services | [data-services.md](data-services.md) | US-018 to US-019 |
+| Operations | [operations.md](operations.md) | US-020 |
