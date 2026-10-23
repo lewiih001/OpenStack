@@ -8,7 +8,7 @@
 ## Context
 
 People sign in to many surfaces: the OpenStack dashboard and CLI, Argo
-CD, Grafana, Harbor, GitHub-connected tooling and Kubernetes. Separate
+CD, Grafana, Harbor, the developer portal and Kubernetes. Separate
 accounts per tool multiply offboarding risk and make MFA inconsistent.
 Automation (CI, OpenTofu, operators) needs credentials that are not a
 person's password.
@@ -38,8 +38,13 @@ We will run **Keycloak** (26.x) as the single identity provider:
 - Break-glass local admin accounts exist per system. They are kept in the password manager with two named custodians, and every use is audited.
 
 Keycloak runs on the `svc` cluster with three replicas and a
-CloudNativePG database. Until Phase 4, Keystone local users are used in
-the lab only.
+CloudNativePG database.
+
+Until federation is live in Phase 4, platform operators use Keystone
+local accounts with long random passwords, held in the password manager
+and limited to named operators. No tenant accounts are created before
+federation. When federation goes live, the local operator accounts are
+disabled, except the break-glass accounts above.
 
 ## Consequences
 
