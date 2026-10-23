@@ -107,3 +107,74 @@ Re-run the capacity model at every monthly review.
 
 Public addresses: about 50 needed on day one. Request a /24, with /26
 as the minimum (ADR-0006).
+
+## 4. Service architecture
+
+### 4.1 Layers and owning tools
+
+The platform is a stack of layers. Each one is built on the layer below
+and owned by exactly one tool. A change to a layer is made only through
+its tool, from code in its folder (ADR-0003).
+
+| Layer | Owning tool | Code in | Decided in |
+| --- | --- | --- | --- |
+| Bare metal and OS | MAAS + Ansible | `infra-baremetal/` | ADR-0005 |
+| Storage | cephadm | `infra-baremetal/` (specs) | ADR-0007 |
+| IaaS (OpenStack 2026.1) | Kolla-Ansible | `infra-openstack/` | ADR-0004, ADR-0006 |
+| Cloud resources and tenants | OpenTofu | `infra-live/`, `tofu-modules/` | ADR-0008, ADR-0015 |
+| Kubernetes clusters | Cluster API (CAPO), via OpenTofu | `infra-live/` | ADR-0004 |
+| Platform and data services | Argo CD | `platform-gitops/` | ADR-0009 |
+| Identity (all layers) | Keycloak federated to Keystone | `platform-gitops/` | ADR-0010 |
+
+Source control and CI run outside the cloud they build: GitHub, with a
+self-hosted runner on the management host for jobs that need private
+network access (ADR-0001).
+
+### 4.2 Service catalogue
+
+| AWS equivalent | Platform service | Built with | Phase |
+| --- | --- | --- | --- |
+| EC2 | Virtual machines | Nova + KVM, Placement | 2 |
+| EBS | Volumes, snapshots, backups | Cinder on Ceph RBD, Cinder Backup | 2 |
+| S3 | Object storage (S3 and Swift APIs) | Ceph RGW with Keystone auth | 1 to 2 |
+| EFS | Shared file systems | Manila on CephFS | 6 |
+| VPC | Networks, routers, security groups, floating IPs | Neutron with OVN | 2 |
+| ELB | Layer 4/7 load balancers | Octavia (active-standby) | 2 |
+| Route 53 | DNS zones and records | Designate | 2 |
+| KMS / Secrets Manager | Keys and secrets | Barbican; OpenBao + External Secrets | 2, 4 |
+| IAM | Users, projects, roles, SSO | Keystone federated to Keycloak | 2, 4 |
+| EKS | Managed Kubernetes | Cluster API Provider OpenStack | 3 |
+| ECR | Registry with scanning and signing | Harbor + Trivy + Cosign | 4 |
+| API Gateway | Public APIs, auth, rate limits | Kong via Gateway API | 4 |
+| Lambda / Fargate | Functions and containers without a cluster | Knative | 6 |
+| RDS PostgreSQL | Managed PostgreSQL with HA and point-in-time recovery | CloudNativePG + Barman Cloud plugin | 5 |
+| RDS MySQL | Managed MySQL | Percona Operator for MySQL | 5 |
+| ElastiCache | In-memory cache | Valkey | 5 |
+| MSK / Amazon MQ | Kafka and RabbitMQ | Strimzi (KRaft), RabbitMQ Cluster Operator | 5 |
+| CloudWatch | Metrics, logs, traces, alerts | Prometheus, Grafana, Loki, Tempo, Alertmanager, OpenTelemetry | 1 to 7 |
+| AWS Backup | Backups and restores | Native tool per layer (ADR-0011) | 1 to 7 |
+| CloudFormation | Infrastructure as code | OpenTofu + OpenStack provider | 0, 8 |
+| Billing | Usage metering and showback | CloudKitty | 8 |
+
+### 4.3 Kubernetes clusters
+
+| Cluster | Purpose |
+| --- | --- |
+| `nbo1-mgmt` | Cluster API management, Argo CD |
+| `nbo1-svc` | Shared platform services: Harbor, Keycloak, OpenBao, observability |
+| `nbo1-stage` | Pre-production for products, one week ahead of prod on upgrades |
+| `nbo1-prod` | Production products and data services |
+
+All clusters run Kubernetes 1.36.x (ADR-0004), are created by Cluster
+API from OpenTofu, and are configured only by Argo CD.
+
+### 4.4 Explicitly not used
+
+| Avoided | Reason | Instead |
+| --- | --- | --- |
+| Ingress-NGINX | Retired upstream | Gateway API with Kong |
+| Bitnami images and charts | Free catalogue withdrawn | Upstream or operator-maintained images |
+| Kafka with ZooKeeper | ZooKeeper removed from Kafka 4 | Strimzi with KRaft |
+| Magnum Heat driver | Deprecated | Cluster API (Magnum CAPI driver for self-service) |
+| Kubernetes Dashboard | Retired | Headlamp |
+| Redis | Licence change in 2024 | Valkey |
