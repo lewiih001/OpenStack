@@ -33,7 +33,7 @@ characters; no environment or customer data that may change.
 | Kubernetes cluster | `<site>-<purpose>` | `nbo1-mgmt`, `nbo1-svc`, `nbo1-stage`, `nbo1-prod` |
 | OpenStack project | `<org>-<team or product>-<env>` | `tek-inventory-prod`, `platform-svc-prod` |
 | OpenTofu resource | `snake_case` of the role | `openstack_networking_network_v2.tenant_private` |
-| Git branch | `<type>/<short-description>` | `ci/add-tflint`, `docs/adr-016-pki` |
+| Git branch | `<type>/<short-description>` | `ci/add-tflint`, `docs/adr-0016-ca-hierarchy` |
 | DNS | `cloud.<domain>` delegated to the platform | `api.cloud.<domain>`, `*.apps.cloud.<domain>`, `<tenant>.cloud.<domain>` |
 
 Role codes: `ctl` control and network, `hci` hyperconverged compute and
