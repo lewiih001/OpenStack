@@ -218,3 +218,43 @@ shares through Manila from Phase 6.
 - Region `nbo1`, availability zone `nbo1-a`. A single AZ provides no AZ-level redundancy yet; tenants use server groups with anti-affinity for HA (**ADR-0014**).
 - DNS: each tenant gets `<tenant>.cloud.<domain>` in Designate. APIs are at `api.cloud.<domain>` and Kubernetes workloads under `*.apps.cloud.<domain>` (**ADR-0012**; public domain to be chosen).
 - Every project has explicit quotas (instances, cores, RAM, volumes, GB, floating IPs, load balancers, S3 bytes). No project relies on defaults.
+
+## 6. Roadmap
+
+Each phase ships as a usable release when its exit criteria pass in the
+lab and are promoted to production. Phases 0 to 4 run in order, because
+each layer runs on the one below. Phases 5 to 8 can be reordered to match
+product needs.
+
+| Phase | Release | After the gate you can |
+| --- | --- | --- |
+| 0 | Foundations | Find every decision, address and secret in one place; CI on every change |
+| 1 | Storage | Store objects in S3 (RGW) for backups and files |
+| 2 | IaaS | Run products on VMs with volumes, private networks, load balancers, DNS and S3 |
+| 3 | Kubernetes | Deploy containerised apps on managed Kubernetes clusters |
+| 4 | Delivery | Ship from commit to production with no manual step |
+| 5 | Data | Use managed PostgreSQL, MySQL, Valkey, Kafka and RabbitMQ |
+| 6 | Serverless and file | Run functions and containers without a cluster; mount shared file systems |
+| 7 | Operations | Rely on SLOs, on-call alerts, tested restores and an offsite backup copy |
+| 8 | Self-service | Onboard tenants through a portal and OpenTofu, with usage showback |
+
+Monitoring, alerts and backups ship with every phase, not only Phase 7:
+nothing holds real data until it is monitored and backed up.
+
+**Growth path:**
+1. Add dedicated compute nodes.
+2. At around eight compute nodes, move Ceph to dedicated storage nodes in sets of three.
+3. Beyond one rack, move to spine-leaf with BGP for floating IPs and add AZ `nbo1-b`.
+4. At around 50 compute nodes, split network nodes from control.
+5. When revenue justifies it, add a second site as a second region for disaster recovery.
+
+## 7. Open items
+
+| Item | Needed by | Recorded in |
+| --- | --- | --- |
+| Public IP block from the ISP (/24 requested, /26 minimum) | Phase 2 | ADR-0006 |
+| Public DNS domain | Phase 2 | ADR-0012 |
+| Workstation CPU, virtualisation, OS and NICs | Phase 1 lab | ADR-0002 |
+| HCI node RAM: 512 GB or 768 GB | Hardware order | Section 3.3 |
+| GitHub Pro for enforced protection on a private repository | Before the repository goes private permanently | ADR-0001 |
+| CA hierarchy (offline root, intermediate) | Phase 0.5 | Future ADR |
