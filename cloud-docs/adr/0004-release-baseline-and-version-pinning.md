@@ -56,7 +56,7 @@ clusters (`kind`) may run the newest version.
 
 ### Positive
 
-- Lab and production run byte-identical versions.
+- Lab and production run the same versions of every component.
 - Upgrades are planned events (ADR-0013), not surprises.
 - SLURP releases allow OpenStack upgrades once a year instead of every six months.
 
