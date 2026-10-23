@@ -19,3 +19,4 @@ old one's status line only.
 | --- | --- | --- | --- |
 | [0001](0001-use-github-for-source-control-and-ci.md) | Use GitHub for source control, reviews and CI | Accepted | 2026-10-23 |
 | [0002](0002-workstation-as-interim-management-host-and-lab.md) | Use the GPU workstation as the interim management host and lab | Proposed | 2026-10-23 |
+| [0003](0003-monorepo-with-one-folder-per-planned-repository.md) | Start as a monorepo with one folder per planned repository | Accepted | 2026-10-23 |
