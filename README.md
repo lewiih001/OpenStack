@@ -18,7 +18,7 @@ Each folder maps to one planned repository and can be split out later with its h
 
 ## Conventions
 
-- Changes reach `main` only through pull requests that pass CI (`yamllint`, `gitleaks`), merged with rebase so every commit is kept ([ADR-0001](cloud-docs/adr/0001-use-github-for-source-control-and-ci.md)). This is enforced by the `protect-main` ruleset on GitHub and by the local pre-push hook below.
+- Changes reach `main` only through pull requests that pass CI (`yamllint`, `gitleaks`), merged with rebase so every commit is kept ([ADR-0001](cloud-docs/adr/0001-use-github-for-source-control-and-ci.md)). While the repository is private on the GitHub Free plan, GitHub does not enforce rulesets, so the local pre-push hook below is the enforcement point. A `protect-main` ruleset applies once the plan supports it (ADR-0001).
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:`...).
 - Secrets are committed only when SOPS-encrypted (`*.sops.yml`); plain-text secrets are blocked by `.gitignore` and CI.
 - Every change is rehearsed in the lab before production.
